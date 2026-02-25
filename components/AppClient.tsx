@@ -51,18 +51,19 @@ function Splash({ onDone }: { onDone: () => void }) {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       opacity: fade ? 0 : 1, transition: 'opacity 0.6s ease', zIndex: 9999,
     }}>
-      <div style={{
-        width: 140, height: 140, borderRadius: '50%',
+<div style={{
+        width: 160, height: 160, borderRadius: '50%',
         border: '3px solid var(--gold)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         background: 'radial-gradient(circle, #1a2a4a 0%, #0d0d1a 100%)',
         animation: 'pulse 2s infinite', marginBottom: 28,
+        overflow: 'hidden', padding: 16, boxSizing: 'border-box',
       }}>
-        <div style={{ textAlign: 'center', fontFamily: 'var(--font-serif)' }}>
-          <div style={{ fontSize: 12, color: 'var(--gold)', letterSpacing: 3 }}>中央</div>
-          <div style={{ fontSize: 32, color: 'var(--gold)', fontWeight: 900, lineHeight: 1 }}>高</div>
-          <div style={{ fontSize: 9, color: '#c9a84c88', letterSpacing: 2 }}>JOONGANG</div>
-        </div>
+        <img
+          src="/mark-choongang.png"
+          alt="중앙고 마크"
+          style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'brightness(1.1)' }}
+        />
       </div>
       <div style={{ fontSize: 34, fontWeight: 900, color: '#fff', letterSpacing: 6, fontFamily: 'var(--font-serif)' }}>계상회</div>
       <div style={{ fontSize: 13, color: 'var(--gold)', letterSpacing: 4, marginTop: 8, opacity: 0.8 }}>중앙고 · 상대 동문</div>

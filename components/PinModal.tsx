@@ -47,6 +47,8 @@ export default function PinModal({ type, title, onSuccess, onCancel }: Props) {
         <input
           ref={inputRef}
           type="password"
+          inputMode="numeric"
+          autoFocus
           value={pin}
           onChange={e => setPin(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSubmit()}

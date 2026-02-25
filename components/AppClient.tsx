@@ -9,7 +9,7 @@ import ImageUpload from '@/components/ImageUpload'
 
 // ── 스타일 헬퍼 ─────────────────────────────────────────────────────────────
 const card: React.CSSProperties = {
-  background: 'var(--surface)', border: '1px solid #c9a84c22',
+  background: 'var(--surface)', border: '1px solid #A5003433',
   borderRadius: 12, padding: 16, marginBottom: 10,
 }
 const header: React.CSSProperties = {
@@ -19,7 +19,7 @@ const header: React.CSSProperties = {
 }
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 14px',
-  background: 'var(--bg)', border: '1px solid var(--gold-dim)',
+  background: 'var(--bg)', border: '1px solid var(--crimson-dim)',
   borderRadius: 8, color: 'var(--text)', fontSize: 14, outline: 'none',
 }
 const btn = (v: 'gold'|'outline'|'red' = 'gold'): React.CSSProperties => ({
@@ -88,6 +88,7 @@ export default function AppClient() {
   // detail views
   const [selMember,  setSelMember]  = useState<Member | null>(null)
   const [selMeeting, setSelMeeting] = useState<Meeting | null>(null)
+  const [lightbox, setLightbox] = useState<string | null>(null)
 
   // search / filter
   const [searchQ,      setSearchQ]      = useState('')
@@ -157,20 +158,16 @@ export default function AppClient() {
 
   // ── 엑셀 출력 ──────────────────────────────────────────────────────────
   const doExport = () => {
-    requirePin('admin', '관리자 비밀번호', () => {
-      window.location.href = '/api/export-members'
-    })
+    window.location.href = '/api/export-members'
   }
 
   // ── 백업 ───────────────────────────────────────────────────────────────
   const doBackup = () => {
-    requirePin('admin', '관리자 비밀번호', () => {
-      const data = JSON.stringify({ members, meetings, notices }, null, 2)
-      const blob = new Blob([data], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url; a.download = `계상회_백업_${new Date().toISOString().slice(0,10)}.json`; a.click()
-    })
+    const data = JSON.stringify({ members, meetings, notices }, null, 2)
+    const blob = new Blob([data], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = `계상회_백업_${new Date().toISOString().slice(0,10)}.json`; a.click()
   }
 
   // ══════════════════════════════════════════════════════════════════════
@@ -183,8 +180,8 @@ export default function AppClient() {
           <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', fontFamily: 'var(--font-serif)', letterSpacing: 3 }}>계상회</div>
           <div style={{ display: 'flex', gap: 8 }}>
             {isAdmin
-              ? <span style={{ fontSize: 12, color: 'var(--gold)', padding: '5px 12px', border: '1px solid var(--gold-dim)', borderRadius: 8 }}>👑 관리자</span>
-              : <button onClick={() => requirePin('admin', '관리자 비밀번호', () => setIsAdmin(true))} style={{ ...btn('outline'), fontSize: 12 }}>관리자 로그인</button>
+              ? <span style={{ fontSize: 12, color: 'var(--gold)', padding: '5px 12px', border: '1px solid var(--crimson-dim)', borderRadius: 8 }}>👑 관리자</span>
+              : <button onClick={() => setIsAdmin(true)} style={{ ...btn('outline'), fontSize: 12 }}>관리자 로그인</button>
             }
           </div>
         </div>
@@ -209,14 +206,14 @@ export default function AppClient() {
         {/* 통계 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
           {[
-            { label: '전체 회원', value: `${members.length}명`, icon: '👥' },
-            { label: '기수', value: `${grades.length}기수`, icon: '🎓' },
-            { label: '모임 횟수', value: `${meetings.filter(m=>!m.is_upcoming).length}회`, icon: '🍽' },
-            { label: '공지사항', value: `${notices.length}건`, icon: '📢' },
-          ].map(({ label: l, value, icon }) => (
-            <div key={l} style={{ ...card, textAlign: 'center', marginBottom: 0 }}>
+            { label: '전체 회원', value: `${members.length}명`, icon: '👥', page: 'members' },
+            { label: '기수', value: `${grades.length}기수`, icon: '🎓', page: 'org' },
+            { label: '모임 횟수', value: `${meetings.filter(m=>!m.is_upcoming).length}회`, icon: '🍽', page: 'meetings' },
+            { label: '공지사항', value: `${notices.length}건`, icon: '📢', page: 'notices' },
+          ].map(({ label: l, value, icon, page: p }) => (
+            <div key={l} onClick={() => nav(p)} style={{ ...card, textAlign: 'center', marginBottom: 0, cursor: 'pointer' }}>
               <div style={{ fontSize: 26 }}>{icon}</div>
-              <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--gold)' }}>{value}</div>
+              <div style={{ fontSize: 24, fontWeight: 900, color: 'var(--crimson)' }}>{value}</div>
               <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>{l}</div>
             </div>
           ))}
@@ -253,7 +250,7 @@ export default function AppClient() {
     <div style={{ paddingBottom: 100 }}>
       <div style={header}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>회원 명부</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>회원 명부</div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={doExport} style={{ ...btn('outline'), fontSize: 12 }}>엑셀</button>
             {isAdmin && (
@@ -281,14 +278,14 @@ export default function AppClient() {
             <div key={grade} style={{ marginBottom: 20 }}>
               <div style={{ fontSize: 12, color: 'var(--gold)', letterSpacing: 2, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span>{grade}기</span>
-                <span style={{ background: 'var(--gold-bg)', borderRadius: 10, padding: '1px 8px' }}>{gm.length}명</span>
+                <span style={{ background: 'var(--crimson-bg)', borderRadius: 10, padding: '1px 8px' }}>{gm.length}명</span>
               </div>
               {gm.map(m => (
                 <div key={m.id} style={{ ...card, display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer' }}
                   onClick={() => { setSelMember(m); setPage('memberDetail') }}>
                   <div style={{
                     width: 48, height: 48, borderRadius: '50%',
-                    background: 'var(--gold-bg)', border: '2px solid var(--gold-dim)',
+                    background: 'var(--crimson-bg)', border: '2px solid var(--crimson-dim)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 18, fontWeight: 700, color: 'var(--gold)', flexShrink: 0, overflow: 'hidden',
                   }}>
@@ -320,20 +317,21 @@ export default function AppClient() {
     const m = selMember
     if (!m) return null
 
-    const doEdit = () => requirePin('member', '회원 비밀번호', () => setEditMember({...m}))
-    const doAdminEdit = () => requirePin('admin', '관리자 비밀번호', () => setEditMember({...m}))
-    const doDelete = () => requirePin('admin', '관리자 비밀번호', async () => {
+    const doEdit = () => setEditMember({...m})
+    const doAdminEdit = () => setEditMember({...m})
+    const doDelete = async () => {
+      if (!confirm('정말 삭제하시겠습니까?')) return
       await supabase.from('members').delete().eq('id', m.id)
       await loadMembers()
       nav('members')
-    })
+    }
 
     return (
       <div style={{ paddingBottom: 100 }}>
         <div style={header}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button onClick={() => nav('members')} style={{ ...btn('outline'), padding: '6px 12px' }}>←</button>
-            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>{m.name}</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>{m.name}</div>
           </div>
         </div>
         <div style={{ padding: 20 }}>
@@ -469,14 +467,14 @@ export default function AppClient() {
   const OrgPage = () => (
     <div style={{ paddingBottom: 100 }}>
       <div style={header}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>조직도</div>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>조직도</div>
         <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 4 }}>← 가로로 스크롤 →</div>
       </div>
       <div style={{ overflowX: 'auto', padding: 20 }}>
         <table style={{ borderCollapse: 'collapse', whiteSpace: 'nowrap' }}>
           <thead>
             <tr>
-              <th style={{ padding: '8px 16px', background: 'var(--surface)', color: 'var(--gold)', fontSize: 12, letterSpacing: 1, borderRight: '1px solid var(--gold-dim)', position: 'sticky', left: 0 }}>기수</th>
+              <th style={{ padding: '8px 16px', background: 'var(--surface)', color: 'var(--gold)', fontSize: 12, letterSpacing: 1, borderRight: '1px solid var(--crimson-dim)', position: 'sticky', left: 0 }}>기수</th>
               {Array.from({ length: Math.max(0, ...grades.map(g => members.filter(m => m.grade === g).length)) }).map((_, i) => (
                 <th key={i} style={{ padding: '8px 10px', color: '#444', fontSize: 11 }}>{i+1}</th>
               ))}
@@ -496,7 +494,7 @@ export default function AppClient() {
                       <div style={{ cursor: 'pointer' }} onClick={() => { setSelMember(m); setPage('memberDetail') }}>
                         <div style={{
                           width: 44, height: 44, borderRadius: '50%',
-                          background: 'var(--gold-bg)', border: '2px solid var(--gold-dim)',
+                          background: 'var(--crimson-bg)', border: '2px solid var(--crimson-dim)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: 16, fontWeight: 700, color: 'var(--gold)',
                           margin: '0 auto 4px', overflow: 'hidden',
@@ -526,7 +524,7 @@ export default function AppClient() {
     <div style={{ paddingBottom: 100 }}>
       <div style={header}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>모임 기록</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>모임 기록</div>
           {isAdmin && (
             <button onClick={() => setEditMeeting({ meeting_date:'', place:'', is_upcoming:false, food_rating:0, food_comment:'', comment:'' })}
               style={{ ...btn(), fontSize: 12 }}>+ 모임 추가</button>
@@ -597,7 +595,7 @@ export default function AppClient() {
         <div style={header}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button onClick={() => nav('meetings')} style={{ ...btn('outline'), padding: '6px 12px' }}>←</button>
-            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>{mt.place}</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>{mt.place}</div>
           </div>
         </div>
         <div style={{ padding: 20 }}>
@@ -657,8 +655,8 @@ export default function AppClient() {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {(mt.is_upcoming ? mt.expected : mt.attendees)?.map(m => (
                 <span key={m.id} style={{
-                  background: 'var(--gold-bg)', border: '1px solid var(--gold-dim)',
-                  borderRadius: 20, padding: '4px 12px', fontSize: 13, color: 'var(--gold)',
+                  background: 'var(--crimson-bg)', border: '1px solid var(--crimson-dim)',
+                  borderRadius: 20, padding: '4px 12px', fontSize: 13, color: '#fff',
                 }}>{m.name}</span>
               ))}
               {!(mt.is_upcoming ? mt.expected : mt.attendees)?.length && (
@@ -674,7 +672,8 @@ export default function AppClient() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginTop: 8 }}>
                 {mt.photos?.map(p => (
                   <img key={p.id} src={p.url} alt="모임 사진"
-                    style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }} />
+                    onClick={() => setLightbox(p.url)}
+                    style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }} />
                 ))}
               </div>
             </div>
@@ -703,7 +702,9 @@ export default function AppClient() {
     const [photoUploading, setPhotoUploading] = useState(false)
     const photoInputRef = useRef<HTMLInputElement>(null)
     const setF = (k: keyof Meeting, v: any) => setForm(prev => ({...prev, [k]: v}))
-    const toggleAtt = (id: number) => setSelAttendees(prev => prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id])
+    const [attSearch, setAttSearch] = useState('')
+    const toggleAtt = (id: number) => { setSelAttendees(prev => prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id]); setAttSearch('') }
+    const attCandidates = attSearch.length >= 1 ? members.filter(m => m.name.includes(attSearch) && !selAttendees.includes(m.id)) : []
 
     const handlePhotoFiles = async (files: FileList) => {
       setPhotoUploading(true)
@@ -749,6 +750,25 @@ export default function AppClient() {
 
         await loadMeetings()
         setEditMeeting(null)
+        // 수정된 모임 상세 화면으로 이동
+        if (meetingId) {
+          const { data: updated } = await supabase.from('meetings').select('*').eq('id', meetingId).single()
+          if (updated) {
+            const [{ data: att }, { data: exp }, { data: ph }] = await Promise.all([
+              supabase.from('meeting_attendees').select('member_id, members(*)').eq('meeting_id', meetingId),
+              supabase.from('meeting_expected').select('member_id, members(*)').eq('meeting_id', meetingId),
+              supabase.from('meeting_photos').select('*').eq('meeting_id', meetingId),
+            ])
+            const enriched = {
+              ...updated,
+              attendees: (att || []).map((r: any) => r.members).filter(Boolean),
+              expected: (exp || []).map((r: any) => r.members).filter(Boolean),
+              photos: ph || [],
+            }
+            setSelMeeting(enriched)
+            setPage('meetingDetail')
+          }
+        }
       } finally { setSaving(false) }
     }
 
@@ -791,14 +811,44 @@ export default function AppClient() {
                 <textarea value={form.comment||''} onChange={e=>setF('comment',e.target.value)} rows={3} style={{...inputStyle, resize:'vertical'}} />
               </div>
               <div style={fieldWrap}>
-                <label style={label}>참석자 선택</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
-                  {members.map(m => (
-                    <button key={m.id} onClick={()=>toggleAtt(m.id)}
-                      style={{ ...btn(selAttendees.includes(m.id) ? 'gold' : 'outline'), padding: '4px 12px', fontSize: 13 }}>
-                      {m.name}
-                    </button>
-                  ))}
+                <label style={label}>참석자 입력</label>
+                {/* 선택된 참석자 태그 */}
+                {selAttendees.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                    {selAttendees.map(id => {
+                      const m = members.find(x => x.id === id)
+                      return m ? (
+                        <span key={id} onClick={() => toggleAtt(id)} style={{
+                          background: 'var(--crimson)', color: '#fff',
+                          borderRadius: 20, padding: '4px 10px', fontSize: 13, cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', gap: 4,
+                        }}>{m.name} <span style={{ fontSize: 11, opacity: 0.8 }}>✕</span></span>
+                      ) : null
+                    })}
+                  </div>
+                )}
+                {/* 검색 입력 */}
+                <div style={{ position: 'relative' }}>
+                  <input
+                    value={attSearch}
+                    onChange={e => setAttSearch(e.target.value)}
+                    placeholder="이름 입력 (예: 김, 이)"
+                    style={{ ...inputStyle }}
+                  />
+                  {attCandidates.length > 0 && (
+                    <div style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0,
+                      background: 'var(--surface2)', border: '1px solid var(--crimson-dim)',
+                      borderRadius: 8, zIndex: 10, overflow: 'hidden', marginTop: 2,
+                    }}>
+                      {attCandidates.map(m => (
+                        <div key={m.id} onClick={() => toggleAtt(m.id)} style={{
+                          padding: '10px 14px', cursor: 'pointer', fontSize: 14,
+                          borderBottom: '1px solid var(--crimson-bg)',
+                        }}>{m.name} <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>{m.grade}기 · {m.company}</span></div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -871,7 +921,7 @@ export default function AppClient() {
     <div style={{ paddingBottom: 100 }}>
       <div style={header}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>공지사항</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>공지사항</div>
           {isAdmin && (
             <button onClick={() => setEditNotice({ title:'', content:'', author:'관리자' })} style={{ ...btn(), fontSize: 12 }}>+ 작성</button>
           )}
@@ -883,10 +933,11 @@ export default function AppClient() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
               <div style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>{n.title}</div>
               {isAdmin && (
-                <button onClick={() => requirePin('admin','관리자 비밀번호', async () => {
+                <button onClick={async () => {
+                  if (!confirm('삭제하시겠습니까?')) return
                   await supabase.from('notices').delete().eq('id', n.id)
                   await loadNotices()
-                })} style={{ ...btn('red'), padding: '2px 8px', fontSize: 11, flexShrink: 0, marginLeft: 8 }}>삭제</button>
+                }} style={{ ...btn('red'), padding: '2px 8px', fontSize: 11, flexShrink: 0, marginLeft: 8 }}>삭제</button>
               )}
             </div>
             <div style={{ fontSize: 13, lineHeight: 1.7, marginBottom: 8 }}>{n.content}</div>
@@ -967,6 +1018,22 @@ export default function AppClient() {
       {editMember  && <MemberEditModal />}
       {editMeeting && <MeetingEditModal />}
       {editNotice  && <NoticeEditModal />}
+      {lightbox && (
+        <div onClick={() => setLightbox(null)} style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)',
+          zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 20,
+        }}>
+          <img src={lightbox} alt="사진 크게보기" style={{
+            maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 12,
+          }} />
+          <button onClick={() => setLightbox(null)} style={{
+            position: 'absolute', top: 20, right: 20,
+            background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%',
+            width: 40, height: 40, color: '#fff', fontSize: 20, cursor: 'pointer',
+          }}>✕</button>
+        </div>
+      )}
       {pinModal    && <PinModal type={pinModal.type} title={pinModal.title} onSuccess={pinModal.onSuccess} onCancel={() => setPinModal(null)} />}
 
       <BottomNav current={activeNav} onChange={nav} />

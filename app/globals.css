@@ -1,0 +1,36 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9a84c;
+  --gold-dim: #c9a84c44;
+  --gold-bg: #c9a84c22;
+  --bg: #0d0d1a;
+  --surface: #1a1a2e;
+  --surface2: #16213e;
+  --text: #e8e8e8;
+  --text-dim: #888;
+  --danger: #e74c3c;
+  --success: #2ecc71;
+  --radius: 12px;
+  --font-sans: 'Noto Sans KR', sans-serif;
+  --font-serif: 'Noto Serif KR', serif;
+}
+
+html, body { background: var(--bg); color: var(--text); font-family: var(--font-sans); }
+
+body { max-width: 480px; margin: 0 auto; min-height: 100vh; }
+
+button { font-family: var(--font-sans); cursor: pointer; }
+input, textarea, select { font-family: var(--font-sans); }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+* { -webkit-tap-highlight-color: transparent; }
+
+@keyframes fadeIn  { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pulse   { 0%,100%{box-shadow:0 0 40px #c9a84c44} 50%{box-shadow:0 0 70px #c9a84c88} }
+@keyframes shake   { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+.fade-in { animation: fadeIn 0.3s ease both; }

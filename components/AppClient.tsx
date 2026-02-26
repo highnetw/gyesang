@@ -22,12 +22,12 @@ const inputStyle: React.CSSProperties = {
   background: 'var(--bg)', border: '1px solid var(--crimson-dim)',
   borderRadius: 8, color: 'var(--text)', fontSize: 14, outline: 'none',
 }
-const btn = (v: 'gold'|'outline'|'red' = 'gold'): React.CSSProperties => ({
+const btn = (v: 'gold' | 'outline' | 'red' = 'gold'): React.CSSProperties => ({
   padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
   fontWeight: 600, fontSize: 13, fontFamily: 'var(--font-sans)',
-  ...(v === 'gold'    ? { background: 'var(--crimson)', color: 'var(--bg)' } :
-      v === 'red'     ? { background: '#c0392b22', color: 'var(--danger)', border: '1px solid #c0392b44' } :
-                        { background: 'transparent', color: 'var(--crimson)', border: '1px solid var(--crimson-dim)' }),
+  ...(v === 'gold' ? { background: 'var(--crimson)', color: 'var(--bg)' } :
+    v === 'red' ? { background: '#c0392b22', color: 'var(--danger)', border: '1px solid #c0392b44' } :
+      { background: 'transparent', color: 'var(--crimson)', border: '1px solid var(--crimson-dim)' }),
 })
 const label: React.CSSProperties = {
   fontSize: 11, color: 'var(--gold)', letterSpacing: 1,
@@ -74,7 +74,7 @@ function Splash({ onDone }: { onDone: () => void }) {
 
 // ── 메인 ─────────────────────────────────────────────────────────────────────
 export default function AppClient() {
-  const [phase, setPhase] = useState<'splash'|'pin'|'app'>('splash')
+  const [phase, setPhase] = useState<'splash' | 'pin' | 'app'>('splash')
   const [page, setPage] = useState('home')
   const [isAdmin, setIsAdmin] = useState(false)
   const [pinModal, setPinModal] = useState<{ type: any; title: string; onSuccess: () => void } | null>(null)
@@ -82,22 +82,22 @@ export default function AppClient() {
   // data
   const [members, setMembers] = useState<Member[]>([])
   const [meetings, setMeetings] = useState<Meeting[]>([])
-  const [notices, setNotices]   = useState<Notice[]>([])
-  const [loading, setLoading]   = useState(false)
+  const [notices, setNotices] = useState<Notice[]>([])
+  const [loading, setLoading] = useState(false)
 
   // detail views
-  const [selMember,  setSelMember]  = useState<Member | null>(null)
+  const [selMember, setSelMember] = useState<Member | null>(null)
   const [selMeeting, setSelMeeting] = useState<Meeting | null>(null)
   const [lightbox, setLightbox] = useState<string | null>(null)
 
   // search / filter
-  const [searchQ,      setSearchQ]      = useState('')
-  const [filterGrade,  setFilterGrade]  = useState<string>('all')
+  const [searchQ, setSearchQ] = useState('')
+  const [filterGrade, setFilterGrade] = useState<string>('all')
 
   // edit forms
-  const [editMember,  setEditMember]  = useState<Partial<Member> | null>(null)
+  const [editMember, setEditMember] = useState<Partial<Member> | null>(null)
   const [editMeeting, setEditMeeting] = useState<Partial<Meeting> | null>(null)
-  const [editNotice,  setEditNotice]  = useState<Partial<Notice>  | null>(null)
+  const [editNotice, setEditNotice] = useState<Partial<Notice> | null>(null)
 
   // ── 데이터 로드 ────────────────────────────────────────────────────────
   const loadMembers = useCallback(async () => {
@@ -119,8 +119,8 @@ export default function AppClient() {
       return {
         ...mt,
         attendees: (att || []).map((r: any) => r.members).filter(Boolean),
-        expected:  (exp || []).map((r: any) => r.members).filter(Boolean),
-        photos:    ph || [],
+        expected: (exp || []).map((r: any) => r.members).filter(Boolean),
+        photos: ph || [],
       }
     }))
     setMeetings(enriched)
@@ -146,7 +146,7 @@ export default function AppClient() {
   // ── 네비 ───────────────────────────────────────────────────────────────
   const nav = (p: string) => { setPage(p); setSelMember(null); setSelMeeting(null) }
 
-  const grades = [...new Set(members.map(m => m.grade))].sort((a,b) => a-b)
+  const grades = [...new Set(members.map(m => m.grade))].sort((a, b) => a - b)
   const upcomingMeeting = meetings.find(m => m.is_upcoming)
 
   const filteredMembers = members.filter(m => {
@@ -167,7 +167,7 @@ export default function AppClient() {
     const blob = new Blob([data], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.href = url; a.download = `계상회_백업_${new Date().toISOString().slice(0,10)}.json`; a.click()
+    a.href = url; a.download = `계상회_백업_${new Date().toISOString().slice(0, 10)}.json`; a.click()
   }
 
   // ══════════════════════════════════════════════════════════════════════
@@ -208,7 +208,7 @@ export default function AppClient() {
           {[
             { label: '전체 회원', value: `${members.length}명`, icon: '👥', page: 'members' },
             { label: '기수', value: `${grades.length}기수`, icon: '🎓', page: 'org' },
-            { label: '모임 횟수', value: `${meetings.filter(m=>!m.is_upcoming).length}회`, icon: '🍽', page: 'meetings' },
+            { label: '모임 횟수', value: `${meetings.filter(m => !m.is_upcoming).length}회`, icon: '🍽', page: 'meetings' },
             { label: '공지사항', value: `${notices.length}건`, icon: '📢', page: 'notices' },
           ].map(({ label: l, value, icon, page: p }) => (
             <div key={l} onClick={() => nav(p)} style={{ ...card, textAlign: 'center', marginBottom: 0, cursor: 'pointer' }}>
@@ -223,10 +223,10 @@ export default function AppClient() {
         {notices.length > 0 && (
           <div style={card}>
             <div style={{ fontSize: 12, color: 'var(--gold)', letterSpacing: 1, marginBottom: 10 }}>📢 최근 공지</div>
-            {notices.slice(0,2).map(n => (
+            {notices.slice(0, 2).map(n => (
               <div key={n.id} onClick={() => nav('notices')} style={{ cursor: 'pointer', paddingBottom: 10, marginBottom: 10, borderBottom: '1px solid #c9a84c11' }}>
                 <div style={{ fontWeight: 600, fontSize: 14 }}>{n.title}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>{n.created_at?.slice(0,10)}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>{n.created_at?.slice(0, 10)}</div>
               </div>
             ))}
           </div>
@@ -254,7 +254,7 @@ export default function AppClient() {
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={doExport} style={{ ...btn('outline'), fontSize: 12 }}>엑셀</button>
             {isAdmin && (
-              <button onClick={() => setEditMember({ name:'', grade: grades[0]||72, mobile:'', email:'', company:'', department:'', position:'', address:'', prev_company:'', memo:'', bio:'', photo_url:'' })}
+              <button onClick={() => setEditMember({ name: '', grade: grades[0] || 72, mobile: '', email: '', company: '', department: '', position: '', address: '', prev_company: '', memo: '', bio: '', photo_url: '' })}
                 style={{ ...btn(), fontSize: 12 }}>+ 추가</button>
             )}
           </div>
@@ -317,8 +317,8 @@ export default function AppClient() {
     const m = selMember
     if (!m) return null
 
-    const doEdit = () => setEditMember({...m})
-    const doAdminEdit = () => setEditMember({...m})
+    const doEdit = () => setEditMember({ ...m })
+    const doAdminEdit = () => setEditMember({ ...m })
     const doDelete = async () => {
       if (!confirm('정말 삭제하시겠습니까?')) return
       await supabase.from('members').delete().eq('id', m.id)
@@ -351,13 +351,13 @@ export default function AppClient() {
           </div>
 
           {[
-            { label: '휴대폰',   value: m.mobile,       href: `tel:${m.mobile}` },
-            { label: '이메일',   value: m.email,        href: `mailto:${m.email}` },
-            { label: '회사',     value: m.company },
+            { label: '휴대폰', value: m.mobile, href: `tel:${m.mobile}` },
+            { label: '이메일', value: m.email, href: `mailto:${m.email}` },
+            { label: '회사', value: m.company },
             { label: '부서/직급', value: [m.department, m.position].filter(Boolean).join(' / ') },
-            { label: '주소',     value: m.address },
-            { label: '전 직장',  value: m.prev_company },
-            { label: '메모',     value: m.memo },
+            { label: '주소', value: m.address },
+            { label: '전 직장', value: m.prev_company },
+            { label: '메모', value: m.memo },
           ].filter(f => f.value).map(({ label: l, value, href }) => (
             <div key={l} style={{ ...card, display: 'flex', gap: 12 }}>
               <div style={{ fontSize: 12, color: 'var(--gold)', width: 72, flexShrink: 0, paddingTop: 1 }}>{l}</div>
@@ -389,7 +389,7 @@ export default function AppClient() {
   // ── 회원 편집 모달 ────────────────────────────────────────────────────
   // ══════════════════════════════════════════════════════════════════════
   const MemberEditModal = () => {
-    const [form, setForm] = useState<Partial<Member>>({...editMember})
+    const [form, setForm] = useState<Partial<Member>>({ ...editMember })
     const [saving, setSaving] = useState(false)
     const set = (k: keyof Member, v: any) => setForm(prev => ({ ...prev, [k]: v }))
 
@@ -409,16 +409,16 @@ export default function AppClient() {
     }
 
     const FIELDS: { k: keyof Member; label: string; type?: string }[] = [
-      { k: 'name',         label: '이름 *' },
-      { k: 'grade',        label: '기수', type: 'number' },
-      { k: 'mobile',       label: '휴대폰' },
-      { k: 'email',        label: '이메일', type: 'email' },
-      { k: 'company',      label: '회사' },
-      { k: 'department',   label: '부서' },
-      { k: 'position',     label: '직급' },
-      { k: 'address',      label: '주소' },
+      { k: 'name', label: '이름 *' },
+      { k: 'grade', label: '기수', type: 'number' },
+      { k: 'mobile', label: '휴대폰' },
+      { k: 'email', label: '이메일', type: 'email' },
+      { k: 'company', label: '회사' },
+      { k: 'department', label: '부서' },
+      { k: 'position', label: '직급' },
+      { k: 'address', label: '주소' },
       { k: 'prev_company', label: '전 직장' },
-      { k: 'memo',         label: '메모' },
+      { k: 'memo', label: '메모' },
     ]
 
     return (
@@ -476,7 +476,7 @@ export default function AppClient() {
             <tr>
               <th style={{ padding: '8px 16px', background: 'var(--surface)', color: 'var(--gold)', fontSize: 12, letterSpacing: 1, borderRight: '1px solid var(--crimson-dim)', position: 'sticky', left: 0 }}>기수</th>
               {Array.from({ length: Math.max(0, ...grades.map(g => members.filter(m => m.grade === g).length)) }).map((_, i) => (
-                <th key={i} style={{ padding: '8px 10px', color: '#444', fontSize: 11 }}>{i+1}</th>
+                <th key={i} style={{ padding: '8px 10px', color: '#444', fontSize: 11 }}>{i + 1}</th>
               ))}
             </tr>
           </thead>
@@ -526,7 +526,7 @@ export default function AppClient() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>모임 기록</div>
           {isAdmin && (
-            <button onClick={() => setEditMeeting({ meeting_date:'', place:'', is_upcoming:false, food_rating:0, food_comment:'', comment:'' })}
+            <button onClick={() => setEditMeeting({ meeting_date: '', place: '', is_upcoming: false, food_rating: 0, food_comment: '', comment: '' })}
               style={{ ...btn(), fontSize: 12 }}>+ 모임 추가</button>
           )}
         </div>
@@ -541,8 +541,8 @@ export default function AppClient() {
                 <div style={{ fontSize: 13, color: 'var(--gold)', marginTop: 2 }}>{mt.meeting_date}</div>
                 <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 6 }}>
                   {mt.is_upcoming
-                    ? `참석 예정: ${(mt.expected||[]).length}명`
-                    : `참석: ${(mt.attendees||[]).length}명`}
+                    ? `참석 예정: ${(mt.expected || []).length}명`
+                    : `참석: ${(mt.attendees || []).length}명`}
                 </div>
               </div>
               {!mt.is_upcoming && mt.food_rating > 0 && (
@@ -567,10 +567,10 @@ export default function AppClient() {
   const MeetingDetailPage = () => {
     const mt = selMeeting
     if (!mt) return null
-    const [myMemberId, setMyMemberId] = useState<number|null>(null)
+    const [myMemberId, setMyMemberId] = useState<number | null>(null)
 
     const toggleExpected = async (memberId: number) => {
-      const isIn = (mt.expected||[]).some(m => m.id === memberId)
+      const isIn = (mt.expected || []).some(m => m.id === memberId)
       if (isIn) {
         await supabase.from('meeting_expected').delete()
           .eq('meeting_id', mt.id).eq('member_id', memberId)
@@ -608,7 +608,7 @@ export default function AppClient() {
                   <div style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 10 }}>본인 이름을 선택하세요</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {members.map(m => {
-                      const isIn = (mt.expected||[]).some(e => e.id === m.id)
+                      const isIn = (mt.expected || []).some(e => e.id === m.id)
                       return (
                         <button key={m.id} onClick={() => { toggleExpected(m.id); setMyMemberId(null) }}
                           style={{ ...btn(isIn ? 'red' : 'gold'), padding: '5px 12px', fontSize: 13 }}>
@@ -672,7 +672,10 @@ export default function AppClient() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6, marginTop: 8 }}>
                 {mt.photos?.map(p => (
                   <img key={p.id} src={p.url} alt="모임 사진"
-                    onClick={() => setLightbox(p.url)}
+                    // 아래 한 줄 주석 처리하고 다음 줄을 내가 삽입함. 그림 화면 확대
+
+                    //      onClick={() => setLightbox(p.url)}
+                    onClick={() => window.open(p.url, '_blank')}
                     style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }} />
                 ))}
               </div>
@@ -680,7 +683,7 @@ export default function AppClient() {
           )}
 
           {isAdmin && (
-            <button onClick={() => setEditMeeting({...mt})} style={{ ...btn(), width: '100%', padding: 12, marginTop: 8 }}>
+            <button onClick={() => setEditMeeting({ ...mt })} style={{ ...btn(), width: '100%', padding: 12, marginTop: 8 }}>
               ✏️ 모임 수정
             </button>
           )}
@@ -693,7 +696,7 @@ export default function AppClient() {
   // ── 모임 편집 모달 ────────────────────────────────────────────────────
   // ══════════════════════════════════════════════════════════════════════
   const MeetingEditModal = () => {
-    const [form, setForm] = useState<Partial<Meeting>>({...editMeeting})
+    const [form, setForm] = useState<Partial<Meeting>>({ ...editMeeting })
     const [selAttendees, setSelAttendees] = useState<number[]>(
       (editMeeting as Meeting)?.attendees?.map(m => m.id) || []
     )
@@ -701,9 +704,9 @@ export default function AppClient() {
     const [saving, setSaving] = useState(false)
     const [photoUploading, setPhotoUploading] = useState(false)
     const photoInputRef = useRef<HTMLInputElement>(null)
-    const setF = (k: keyof Meeting, v: any) => setForm(prev => ({...prev, [k]: v}))
+    const setF = (k: keyof Meeting, v: any) => setForm(prev => ({ ...prev, [k]: v }))
     const [attSearch, setAttSearch] = useState('')
-    const toggleAtt = (id: number) => { setSelAttendees(prev => prev.includes(id) ? prev.filter(x=>x!==id) : [...prev, id]); setAttSearch('') }
+    const toggleAtt = (id: number) => { setSelAttendees(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]); setAttSearch('') }
     const attCandidates = attSearch.length >= 1 ? members.filter(m => m.name.includes(attSearch) && !selAttendees.includes(m.id)) : []
 
     const handlePhotoFiles = async (files: FileList) => {
@@ -782,17 +785,17 @@ export default function AppClient() {
 
           <div style={fieldWrap}>
             <label style={label}>날짜</label>
-            <input type="date" value={form.meeting_date||''} onChange={e=>setF('meeting_date',e.target.value)} style={inputStyle} />
+            <input type="date" value={form.meeting_date || ''} onChange={e => setF('meeting_date', e.target.value)} style={inputStyle} />
           </div>
           <div style={fieldWrap}>
             <label style={label}>장소</label>
-            <input value={form.place||''} onChange={e=>setF('place',e.target.value)} style={inputStyle} />
+            <input value={form.place || ''} onChange={e => setF('place', e.target.value)} style={inputStyle} />
           </div>
           <div style={fieldWrap}>
             <label style={label}>종류</label>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={()=>setF('is_upcoming',false)} style={{ ...btn(form.is_upcoming ? 'outline' : 'gold'), flex: 1 }}>완료된 모임</button>
-              <button onClick={()=>setF('is_upcoming',true)}  style={{ ...btn(form.is_upcoming ? 'gold' : 'outline'), flex: 1 }}>예정 모임</button>
+              <button onClick={() => setF('is_upcoming', false)} style={{ ...btn(form.is_upcoming ? 'outline' : 'gold'), flex: 1 }}>완료된 모임</button>
+              <button onClick={() => setF('is_upcoming', true)} style={{ ...btn(form.is_upcoming ? 'gold' : 'outline'), flex: 1 }}>예정 모임</button>
             </div>
           </div>
 
@@ -800,15 +803,15 @@ export default function AppClient() {
             <>
               <div style={fieldWrap}>
                 <label style={label}>음식 평점</label>
-                <StarRating value={form.food_rating||0} onChange={v=>setF('food_rating',v)} />
+                <StarRating value={form.food_rating || 0} onChange={v => setF('food_rating', v)} />
               </div>
               <div style={fieldWrap}>
                 <label style={label}>음식 평가</label>
-                <input value={form.food_comment||''} onChange={e=>setF('food_comment',e.target.value)} style={inputStyle} />
+                <input value={form.food_comment || ''} onChange={e => setF('food_comment', e.target.value)} style={inputStyle} />
               </div>
               <div style={fieldWrap}>
                 <label style={label}>모임 소감</label>
-                <textarea value={form.comment||''} onChange={e=>setF('comment',e.target.value)} rows={3} style={{...inputStyle, resize:'vertical'}} />
+                <textarea value={form.comment || ''} onChange={e => setF('comment', e.target.value)} rows={3} style={{ ...inputStyle, resize: 'vertical' }} />
               </div>
               <div style={fieldWrap}>
                 <label style={label}>참석자 입력</label>
@@ -923,7 +926,7 @@ export default function AppClient() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-serif)' }}>공지사항</div>
           {isAdmin && (
-            <button onClick={() => setEditNotice({ title:'', content:'', author:'관리자' })} style={{ ...btn(), fontSize: 12 }}>+ 작성</button>
+            <button onClick={() => setEditNotice({ title: '', content: '', author: '관리자' })} style={{ ...btn(), fontSize: 12 }}>+ 작성</button>
           )}
         </div>
       </div>
@@ -941,7 +944,7 @@ export default function AppClient() {
               )}
             </div>
             <div style={{ fontSize: 13, lineHeight: 1.7, marginBottom: 8 }}>{n.content}</div>
-            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{n.created_at?.slice(0,10)} · {n.author}</div>
+            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{n.created_at?.slice(0, 10)} · {n.author}</div>
           </div>
         ))}
         {notices.length === 0 && <div style={{ textAlign: 'center', color: '#555', padding: 40 }}>공지사항이 없습니다</div>}
@@ -951,7 +954,7 @@ export default function AppClient() {
 
   // ── 공지 편집 모달 ─────────────────────────────────────────────────────
   const NoticeEditModal = () => {
-    const [form, setForm] = useState<Partial<Notice>>({...editNotice})
+    const [form, setForm] = useState<Partial<Notice>>({ ...editNotice })
     const [saving, setSaving] = useState(false)
     const save = async () => {
       if (!form.title || !form.content) return
@@ -972,11 +975,11 @@ export default function AppClient() {
           </div>
           <div style={fieldWrap}>
             <label style={label}>제목</label>
-            <input value={form.title||''} onChange={e=>setForm(p=>({...p,title:e.target.value}))} style={inputStyle} />
+            <input value={form.title || ''} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} style={inputStyle} />
           </div>
           <div style={fieldWrap}>
             <label style={label}>내용</label>
-            <textarea value={form.content||''} onChange={e=>setForm(p=>({...p,content:e.target.value}))} rows={8} style={{...inputStyle,resize:'vertical'}} />
+            <textarea value={form.content || ''} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} rows={8} style={{ ...inputStyle, resize: 'vertical' }} />
           </div>
           <button onClick={save} disabled={saving} style={{ ...btn(), width: '100%', padding: 14 }}>
             {saving ? '저장 중...' : '저장'}
@@ -989,15 +992,15 @@ export default function AppClient() {
   // ══════════════════════════════════════════════════════════════════════
   // ── 렌더 ──────────────────────────────────────────────────────────────
   // ══════════════════════════════════════════════════════════════════════
-  const activeNav = ['members','org'].includes(page) ? page
+  const activeNav = ['members', 'org'].includes(page) ? page
     : page === 'memberDetail' ? 'members'
-    : page === 'meetingDetail' ? 'meetings'
-    : page
+      : page === 'meetingDetail' ? 'meetings'
+        : page
 
   if (phase === 'splash') return <Splash onDone={() => setPhase('pin')} />
   if (phase === 'pin') return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <PinModal type="entry" title="계상회 입장" onSuccess={() => setPhase('app')} onCancel={() => {}} />
+      <PinModal type="entry" title="계상회 입장" onSuccess={() => setPhase('app')} onCancel={() => { }} />
     </div>
   )
 
@@ -1007,17 +1010,17 @@ export default function AppClient() {
         <div style={{ position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 480, height: 2, background: 'linear-gradient(90deg, var(--bg), var(--gold), var(--bg))', zIndex: 9999, animation: 'fadeIn 0.3s' }} />
       )}
 
-      {page === 'home'         && <HomePage />}
-      {page === 'members'      && <MembersPage />}
+      {page === 'home' && <HomePage />}
+      {page === 'members' && <MembersPage />}
       {page === 'memberDetail' && <MemberDetailPage />}
-      {page === 'org'          && <OrgPage />}
-      {page === 'meetings'     && <MeetingsPage />}
-      {page === 'meetingDetail'&& <MeetingDetailPage />}
-      {page === 'notices'      && <NoticesPage />}
+      {page === 'org' && <OrgPage />}
+      {page === 'meetings' && <MeetingsPage />}
+      {page === 'meetingDetail' && <MeetingDetailPage />}
+      {page === 'notices' && <NoticesPage />}
 
-      {editMember  && <MemberEditModal />}
+      {editMember && <MemberEditModal />}
       {editMeeting && <MeetingEditModal />}
-      {editNotice  && <NoticeEditModal />}
+      {editNotice && <NoticeEditModal />}
       {lightbox && (
         <div onClick={() => setLightbox(null)} style={{
           position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)',
@@ -1034,7 +1037,7 @@ export default function AppClient() {
           }}>✕</button>
         </div>
       )}
-      {pinModal    && <PinModal type={pinModal.type} title={pinModal.title} onSuccess={pinModal.onSuccess} onCancel={() => setPinModal(null)} />}
+      {pinModal && <PinModal type={pinModal.type} title={pinModal.title} onSuccess={pinModal.onSuccess} onCancel={() => setPinModal(null)} />}
 
       <BottomNav current={activeNav} onChange={nav} />
     </div>

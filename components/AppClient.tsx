@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { supabase } from '@/lib/supabase'
 import { Member, Meeting, Notice } from '@/lib/types'
 import PinModal from '@/components/PinModal'
@@ -675,7 +676,7 @@ export default function AppClient() {
                     // 아래 한 줄 주석 처리하고 다음 줄을 내가 삽입함. 그림 화면 확대
 
                     //      onClick={() => setLightbox(p.url)}
-                    onClick={() => window.open(p.url, '_blank')}
+                    onClick={() => setLightbox(p.url)}
                     style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }} />
                 ))}
               </div>
@@ -1021,21 +1022,12 @@ export default function AppClient() {
       {editMember && <MemberEditModal />}
       {editMeeting && <MeetingEditModal />}
       {editNotice && <NoticeEditModal />}
-      {lightbox && (
-        <div onClick={() => setLightbox(null)} style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.95)',
-          zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 20,
-        }}>
-          <img src={lightbox} alt="사진 크게보기" style={{
-            maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 12,
-          }} />
-          <button onClick={() => setLightbox(null)} style={{
-            position: 'absolute', top: 20, right: 20,
-            background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%',
-            width: 40, height: 40, color: '#fff', fontSize: 20, cursor: 'pointer',
-          }}>✕</button>
-        </div>
+      {lightbox && typeof document !== 'undefined' && createPortal(
+        <div onClick={() => setLightbox(null)} style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.97)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img src={lightbox} alt="" style={{ maxWidth: '100vw', maxHeight: '100vh', width: 'auto', height: 'auto', objectFit: 'contain' }} />
+          <button onClick={e => { e.stopPropagation(); setLightbox(null) }} style={{ position: 'fixed', top: 20, right: 20, background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '50%', width: 44, height: 44, color: '#fff', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}>✕</button>
+        </div>,
+        document.body
       )}
       {pinModal && <PinModal type={pinModal.type} title={pinModal.title} onSuccess={pinModal.onSuccess} onCancel={() => setPinModal(null)} />}
 

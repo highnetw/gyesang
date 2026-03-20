@@ -1,7 +1,4 @@
 {
-  "name": "계상회",
-  "short_name": "계상회",
-  "description": "중앙고 서울상대",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

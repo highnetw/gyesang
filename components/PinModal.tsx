@@ -34,7 +34,7 @@ export default function PinModal({ type, title, onSuccess, onCancel }: Props) {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)',
+      position: 'fixed', inset: 0, background: 'rgba(0,0,20,0.55)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
     }}>
       <div style={{

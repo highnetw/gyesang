@@ -54,7 +54,9 @@ function Splash({ onDone }: { onDone: () => void }) {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'linear-gradient(135deg, #0d0008 0%, #1a0010 50%, #200015 100%)',
+      backgroundImage: 'url(/building.png)',
+backgroundSize: 'cover',
+backgroundPosition: 'center top',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       opacity: fade ? 0 : 1, transition: 'opacity 0.6s ease', zIndex: 9999,
     }}>
@@ -1117,11 +1119,15 @@ export default function AppClient() {
     : page
 
   if (phase === 'splash') return <Splash onDone={() => setPhase('pin')} />
-  if (phase === 'pin') return (
-    <div style={{ background: 'var(--bg)', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <PinModal type="entry" title="계상회 입장" onSuccess={() => setPhase('app')} onCancel={() => {}} />
-    </div>
-  )
+if (phase === 'pin') return (
+  <div style={{
+    backgroundImage: 'url(/building.png)',
+    backgroundSize: 'cover', backgroundPosition: 'center top',
+    minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  }}>
+    <PinModal type="entry" title="계상회 입장" onSuccess={() => setPhase('app')} onCancel={() => {}} />
+  </div>
+)
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingBottom: 70 }}>

@@ -30,8 +30,8 @@ const btn = (v: 'gold' | 'outline' | 'red' = 'gold'): React.CSSProperties => ({
   ...(v === 'gold'
     ? { background: 'var(--crimson)', color: 'var(--bg)' }
     : v === 'red'
-    ? { background: '#c0392b22', color: 'var(--danger)', border: '1px solid #c0392b44' }
-    : { background: 'transparent', color: 'var(--crimson)', border: '1px solid var(--crimson-dim)' }),
+      ? { background: '#c0392b22', color: 'var(--danger)', border: '1px solid #c0392b44' }
+      : { background: 'transparent', color: 'var(--crimson)', border: '1px solid var(--crimson-dim)' }),
 })
 const label: React.CSSProperties = {
   fontSize: 11, color: 'var(--gold)', letterSpacing: 1,
@@ -55,8 +55,8 @@ function Splash({ onDone }: { onDone: () => void }) {
     <div style={{
       position: 'fixed', inset: 0,
       backgroundImage: 'url(/building.png)',
-backgroundSize: 'cover',
-backgroundPosition: 'center top',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center top',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       opacity: fade ? 0 : 1, transition: 'opacity 0.6s ease', zIndex: 9999,
     }}>
@@ -118,14 +118,14 @@ function AdminPinModal({ onSuccess, onCancel }: { onSuccess: () => void; onCance
         {error && <div style={{ fontSize: 12, color: 'var(--danger)', marginBottom: 8 }}>{error}</div>}
         {/* 키패드 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginTop: 16 }}>
-          {['1','2','3','4','5','6','7','8','9','','0','DEL'].map((k, i) => (
+          {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'DEL'].map((k, i) => (
             k === '' ? <div key={i} /> :
-            <button key={k} onClick={() => handleKey(k)} style={{
-              padding: '14px 0', borderRadius: 10,
-              background: k === 'DEL' ? '#2a0018' : 'var(--bg)',
-              border: '1px solid var(--crimson-dim)',
-              color: 'var(--text)', fontSize: 18, fontWeight: 600, cursor: 'pointer',
-            }}>{k === 'DEL' ? '⌫' : k}</button>
+              <button key={k} onClick={() => handleKey(k)} style={{
+                padding: '14px 0', borderRadius: 10,
+                background: k === 'DEL' ? '#2a0018' : 'var(--bg)',
+                border: '1px solid var(--crimson-dim)',
+                color: 'var(--text)', fontSize: 18, fontWeight: 600, cursor: 'pointer',
+              }}>{k === 'DEL' ? '⌫' : k}</button>
           ))}
         </div>
         <button onClick={onCancel} style={{ ...btn('outline'), width: '100%', marginTop: 16 }}>취소</button>
@@ -152,6 +152,17 @@ export default function AppClient() {
   const [selMember, setSelMember] = useState<Member | null>(null)
   const [selMeeting, setSelMeeting] = useState<Meeting | null>(null)
   const [lightbox, setLightbox] = useState<string | null>(null)
+  // 0321 1206 추가
+  // 뒤로가기로 라이트박스 닫기
+  const openLightbox = (url: string) => {
+    history.pushState({ lightbox: true }, '')
+    setLightbox(url)
+  }
+  useEffect(() => {
+    const onPop = () => setLightbox(null)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   // search / filter
   const [searchQ, setSearchQ] = useState('')
@@ -790,7 +801,7 @@ export default function AppClient() {
                     key={p.id}
                     src={p.url}
                     alt="모임 사진"
-                    onClick={() => setLightbox(p.url)}
+                    onClick={() => openLightbox(p.url)}
                     style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }}
                   />
                 ))}
@@ -1115,19 +1126,19 @@ export default function AppClient() {
   // ══════════════════════════════════════════════════════════════════════
   const activeNav = ['members', 'org'].includes(page) ? page
     : page === 'memberDetail' ? 'members'
-    : page === 'meetingDetail' ? 'meetings'
-    : page
+      : page === 'meetingDetail' ? 'meetings'
+        : page
 
   if (phase === 'splash') return <Splash onDone={() => setPhase('pin')} />
-if (phase === 'pin') return (
-  <div style={{
-    backgroundImage: 'url(/building.png)',
-    backgroundSize: 'cover', backgroundPosition: 'center top',
-    minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-  }}>
-    <PinModal type="entry" title="계상회 입장" onSuccess={() => setPhase('app')} onCancel={() => {}} />
-  </div>
-)
+  if (phase === 'pin') return (
+    <div style={{
+      backgroundImage: 'url(/building.png)',
+      backgroundSize: 'cover', backgroundPosition: 'center top',
+      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <PinModal type="entry" title="계상회 입장" onSuccess={() => setPhase('app')} onCancel={() => { }} />
+    </div>
+  )
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingBottom: 70 }}>
@@ -1163,7 +1174,7 @@ if (phase === 'pin') return (
       {/* 라이트박스 */}
       {lightbox && typeof document !== 'undefined' && createPortal(
         <div
-          onClick={() => setLightbox(null)}
+          onClick={() => history.back(null)}
           style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.97)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <img
@@ -1172,7 +1183,7 @@ if (phase === 'pin') return (
             style={{ maxWidth: '100vw', maxHeight: '100vh', width: 'auto', height: 'auto', objectFit: 'contain' }}
           />
           <button
-            onClick={e => { e.stopPropagation(); setLightbox(null) }}
+            onClick={e => { e.stopPropagation(); history.back(null) }}
             style={{ position: 'fixed', top: 20, right: 20, background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '50%', width: 44, height: 44, color: '#fff', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}
           >✕</button>
         </div>,

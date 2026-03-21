@@ -1174,7 +1174,7 @@ export default function AppClient() {
       {/* 라이트박스 */}
       {lightbox && typeof document !== 'undefined' && createPortal(
         <div
-          onClick={() => history.back(null)}
+          onClick={() => history.back()}
           style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.97)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <img
@@ -1183,7 +1183,7 @@ export default function AppClient() {
             style={{ maxWidth: '100vw', maxHeight: '100vh', width: 'auto', height: 'auto', objectFit: 'contain' }}
           />
           <button
-            onClick={e => { e.stopPropagation(); history.back(null) }}
+            onClick={e => { e.stopPropagation(); history.back() }}
             style={{ position: 'fixed', top: 20, right: 20, background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '50%', width: 44, height: 44, color: '#fff', fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100000 }}
           >✕</button>
         </div>,
